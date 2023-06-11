@@ -1,34 +1,24 @@
-version: 0.2
 
+version: 0.2
 phases:
-  install:
-    runtime-versions:
-      nodejs: latest
   pre_build:
     commands:
-      - apt-get update
-      - apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-      - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-      - apt-get update
-      - apt-get install -y docker-ce docker-ce-cli containerd.io
-
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 894776064790.dkr.ecr.ap-south-1.amazonaws.com
+      - echo $AWS_DEFAULT_REGION
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
     commands:
-      - echo Building the Docker image...
-      - sudo service docker start
-      - docker version
-      - ls -l /var/run/docker.sock
-      - sudo usermod -aG docker $USER
-      - sudo service docker restart
-      - docker build -t nodeapp:latest .
-      - echo Tagging the Docker image...
-      - docker tag nodeapp:latest 894776064790.dkr.ecr.ap-south-1.amazonaws.com/nodeapp:latest
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG      
   post_build:
     commands:
-      - echo Pushing the Docker image to Amazon ECR...
-      - docker push 894776064790.dkr.ecr.ap-south-1.amazonaws.com/nodeapp:latest
-      - echo Updating the ECS service...
-      - aws ecs update-service --cluster node-fargate --service node-fargate-service --force-new-deployment
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - printf '[{"name":"helloworld","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json
+
