@@ -1,8 +1,4 @@
-FROM node:latest
-# Create app directory
-RUN mkdir /app
-
-WORKDIR /app
+FROM node:18
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
