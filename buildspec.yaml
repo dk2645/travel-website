@@ -11,6 +11,11 @@ phases:
   build:
     commands:
       - echo Building the Docker image...
+      - sudo service docker start
+      - docker version
+      - ls -l /var/run/docker.sock
+      - sudo usermod -aG docker $USER
+      - sudo service docker restart
       - docker build -t nodeapp:latest .
       - echo Tagging the Docker image...
       - docker tag nodeapp:latest 894776064790.dkr.ecr.ap-south-1.amazonaws.com/nodeapp:latest
