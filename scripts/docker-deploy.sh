@@ -8,4 +8,4 @@ docker rm my-container || true
 docker build -t node-app:latest
 
 # Run the Docker container with the updated image
-docker run -d --name my-container -p 8080:8080 node-app:latest
+docker run -d --name my-container -p 3000:3000 node-app:latest
