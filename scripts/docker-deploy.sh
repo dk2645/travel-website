@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd /app/travel-website
 # Stop and remove the existing container (if running)
 docker stop my-container || true
 docker rm my-container || true
