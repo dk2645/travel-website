@@ -18,7 +18,7 @@ phases:
     commands:
       - echo Build completed on date
       - echo Creating image definitions file...
-      - echo '[{"name":"fargate","imageUri":"public.ecr.aws/u1m0w5o5/fargate:latest","containerPort":8080}]' > imagedefinitions.json
+      - echo '[{"name":"fargate","imageUri":"public.ecr.aws/u1m0w5o5/fargate:latest","containerPort":80}]' > imagedefinitions.json
 
 artifacts:
   files:
