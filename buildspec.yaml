@@ -6,19 +6,19 @@ phases:
       nodejs: 18
   pre_build:
     commands:
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j6r0i7r3
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/u1m0w5o5
   build:
     commands:
       - echo Building Docker image...
-      - docker build -t nodejs-app-task-1 .
+      - docker build -t fargate .
       - echo Pushing Docker image to ECR...
-      - docker tag nodejs-app-task-1:latest public.ecr.aws/j6r0i7r3/node-app:latest
-      - docker push public.ecr.aws/j6r0i7r3/node-app:latest
+      - docker tag fargate:latest public.ecr.aws/u1m0w5o5/fargate:latest
+      - docker push public.ecr.aws/u1m0w5o5/fargate:latest
   post_build:
     commands:
       - echo Build completed on date
       - echo Creating image definitions file...
-      - echo '[{"name":"node-app","imageUri":"public.ecr.aws/j6r0i7r3/node-app:latest","containerPort":3000}]' > imagedefinitions.json
+      - echo '[{"name":"fargate","imageUri":"public.ecr.aws/u1m0w5o5/fargate:latest","containerPort":8080}]' > imagedefinitions.json
 
 artifacts:
   files:
